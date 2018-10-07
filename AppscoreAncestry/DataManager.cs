@@ -46,12 +46,53 @@ namespace AppscoreAncestry
                         }
                         PersonDictionary[person.ID] = person;
 
+                        if (!NameDictionary.ContainsKey(person.Name))
+                        {
+                            NameDictionary[person.Name] = person.ID;
+                        }
+
+                        if (!DirectAncestors.ContainsKey(person.ID))
+                        {
+                            DirectAncestors[person.ID] = new HashSet<int>();
+                        }
+
+                        var fatherId = person.Father_Id ?? -1;
+
+                        if (fatherId != -1)
+                        {
+                            if (!DirectDesendants.ContainsKey(fatherId))
+                            {
+                                DirectDesendants[fatherId] = new HashSet<int>();
+                            }
+                            DirectAncestors[person.ID].Add(fatherId);
+                            DirectDesendants[fatherId].Add(person.ID);
+                        }
+
+                        var motherId = person.Mother_Id ?? -1;
+                        if (motherId != -1)
+                        {
+                            if (!DirectDesendants.ContainsKey(motherId))
+                            {
+                                DirectDesendants[motherId] = new HashSet<int>();
+                            }
+                            DirectAncestors[person.ID].Add(motherId);
+                            DirectDesendants[motherId].Add(person.ID);
+                        }
                     }
                 }
             }
         }
 
         public static Dictionary<int, Place> PlaceDictionary { get; } = new Dictionary<int, Place>();
+
         public static Dictionary<int, Person> PersonDictionary { get; } = new Dictionary<int, Person>();
+
+        // Save the unique name and the first id with the name.
+        public static Dictionary<string, int> NameDictionary { get; } =
+            new Dictionary<string, int>(StringComparer.InvariantCultureIgnoreCase);
+
+        public static Dictionary<int, HashSet<int>> DirectAncestors { get; } = new Dictionary<int, HashSet<int>>();
+
+        public static Dictionary<int, HashSet<int>> DirectDesendants { get; } = new Dictionary<int, HashSet<int>>();
     }
 }
