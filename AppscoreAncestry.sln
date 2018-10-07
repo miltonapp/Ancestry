@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2041
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppscoreAncestry", "AppscoreAncestry\AppscoreAncestry.csproj", "{501ABDF2-B1D3-416C-8BFA-14BBD7F6C4E6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{501ABDF2-B1D3-416C-8BFA-14BBD7F6C4E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{501ABDF2-B1D3-416C-8BFA-14BBD7F6C4E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{501ABDF2-B1D3-416C-8BFA-14BBD7F6C4E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{501ABDF2-B1D3-416C-8BFA-14BBD7F6C4E6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9596602E-434D-4FCC-82EA-8EEBC8131E7E}
+	EndGlobalSection
+EndGlobal
