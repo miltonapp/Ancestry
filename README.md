@@ -35,4 +35,11 @@ Get all female Descendants of Dalenna Shellie:
 
 Get top 10 male Descendants of Dalenna Shellie:
     ../api/v1/person/Dalenna Shellie/Descendants/Gender/M/10
-    
+
+Unit testing TBD:
+    Test each api with positive, nagative, boundaries and performance.
+    Test invalid json format.
+    Test invalid person data and invalid place data E.g. place id not found, person parents id reference missing/dead-looping.
+    Test single parent.
+    Test Ancestors with count included the right Ancestors(with geneder) cross multiple generations.
+
