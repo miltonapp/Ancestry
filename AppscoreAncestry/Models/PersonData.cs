@@ -22,7 +22,7 @@ namespace AppscoreAncestry.Models
 
         public string Name { get => _person.Name; }
 
-        public string Gender { get => _person.Gender; }
+        public string Gender { get => _person.Gender == "M" ? "Male" : "Female"; }
 
         public string BirthPlace
         {
