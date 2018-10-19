@@ -60,7 +60,7 @@ namespace AppscoreAncestry.Controllers
         {
             if (!DataManager.NameDictionary.ContainsKey(name))
             {
-                return null;
+                return new List<IPersonData>();
             }
 
             // Return all when ask for both
@@ -72,8 +72,9 @@ namespace AppscoreAncestry.Controllers
             var person = DataManager.NameDictionary[name];
             HashSet<Person> ansestors = new HashSet<Person>();
             int countToFind = count ?? 10;
-            FindAncestors(person, ansestors, countToFind, gender);
-            
+
+            ansestors = BFS_Relatives(person, DataManager.DirectAncestors, countToFind, gender);
+
             List<IPersonData> result = new List<IPersonData>();
             foreach (var anscestor in ansestors)
             {
@@ -94,7 +95,7 @@ namespace AppscoreAncestry.Controllers
         {
             if (!DataManager.NameDictionary.ContainsKey(name))
             {
-                return null;
+                return new List<IPersonData>();
             }
 
             // Return all when ask for both
@@ -106,7 +107,8 @@ namespace AppscoreAncestry.Controllers
             var person = DataManager.NameDictionary[name];
             HashSet<Person> descendants = new HashSet<Person>();
             int countToFind = count ?? 10;
-            FindDescendants(person, descendants, countToFind, gender);
+
+            descendants = BFS_Relatives(person, DataManager.DirectDesendants, countToFind, gender);
 
             List<IPersonData> result = new List<IPersonData>();
             foreach (var descendant in descendants)
@@ -122,61 +124,61 @@ namespace AppscoreAncestry.Controllers
         }
 
         /// <summary>
-        /// Recursively looking for descendants with given number and gender
+        /// Breadth first search
         /// </summary>
         /// <param name="person"></param>
         /// <param name="descendants"></param>
         /// <param name="count"></param>
         /// <param name="gender"></param>
         /// <returns></returns>
-        HashSet<Person> FindDescendants(int person, HashSet<Person> descendants, int count, string gender)
+        HashSet<Person> BFS_Relatives(int person, Dictionary<int, HashSet<int>> relativesDictionary, int count, string gender)
         {
-            int found = descendants.Count();
-            if (!string.IsNullOrEmpty(gender) && gender != "MF")
+            // HashSet to save the result.
+            HashSet<Person> set = new HashSet<Person>();
+
+            // HashSet to prevent if there is a loop in the data.
+            HashSet<int> checkedSet = new HashSet<int>();
+            checkedSet.Add(person);
+            Queue<Person> queue = new Queue<Person>();
+            if (relativesDictionary.ContainsKey(person))
             {
-                found = descendants.Count(x => x.Gender.Equals(gender));
+                relativesDictionary[person].ToList().ForEach(p => queue.Enqueue(DataManager.PersonDictionary[p]));
             }
 
-            if (found >= count || !DataManager.DirectDesendants.ContainsKey(person))
+            while (queue.Count > 0)
             {
-                return descendants;
-            }
+                int found = set.Count();
+                if (!string.IsNullOrEmpty(gender) && gender != "MF")
+                {
+                    found = set.Count(x => x.Gender.Equals(gender));
+                }
 
-            foreach (int id in DataManager.DirectDesendants[person])
-            {
-                descendants.Add(DataManager.PersonDictionary[id]);
-                FindDescendants(id, descendants, count, gender);
-            }
-            return descendants;
-        }
+                if (found >= count)
+                {
+                    break;
+                }
 
-        /// <summary>
-        /// Recursively looking for ancestors with given number and gender
-        /// </summary>
-        /// <param name="person"></param>
-        /// <param name="ancestors"></param>
-        /// <param name="count"></param>
-        /// <param name="gender"></param>
-        /// <returns></returns>
-        HashSet<Person> FindAncestors(int person, HashSet<Person> ancestors, int count, string gender)
-        {
-            int found = ancestors.Count();
-            if (!string.IsNullOrEmpty(gender) && gender != "MF")
-            {
-                found = ancestors.Count(x => x.Gender.Equals(gender));
+                var current = queue.Dequeue();
+                set.Add(current);
+                int newID = current.ID;
+                if (checkedSet.Contains(newID))
+                {
+                    continue;
+                }
+                checkedSet.Add(newID);
+                if (relativesDictionary.ContainsKey(newID))
+                {
+                    relativesDictionary[newID].ToList().ForEach(x =>
+                    {
+                        var p = DataManager.PersonDictionary[x];
+                        if (!set.Contains(p)) {
+                            queue.Enqueue(p);
+                        }
+                    });
+                }
             }
-
-            if (found >= count || !DataManager.DirectAncestors.ContainsKey(person))
-            {
-                return ancestors;
-            }
-
-            foreach (int id in DataManager.DirectAncestors[person])
-            {
-                ancestors.Add(DataManager.PersonDictionary[id]);
-                FindAncestors(id, ancestors, count, gender);
-            }
-            return ancestors;
+            
+            return set;
         }
     }
 }
